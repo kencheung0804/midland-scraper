@@ -1,17 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import App from "./App";
+import UploadJson from "./UploadJson";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const Index = () => {
+  return (
+    <Router>
+      <Switch>
+        <Route path="/" exact>
+          <App />
+        </Route>
+      </Switch>
+      <Switch>
+        <Route path="/upload_json" exact>
+          <UploadJson />
+        </Route>
+      </Switch>
+    </Router>
+  );
+};
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+ReactDOM.render(<Index />, document.getElementById("root"));
