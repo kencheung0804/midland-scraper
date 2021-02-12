@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 20,
   },
   emptyText: { paddingTop: 100 },
+  fileInput: { paddingBottom: 50 },
 }));
 
 export default function UploadJson() {
@@ -73,6 +74,23 @@ export default function UploadJson() {
           >
             Save Table
           </Button>
+
+          <input
+            type="file"
+            name="Upload Whole Json File"
+            accept="application/json"
+            className={classes.fileInput}
+            onChange={(e) => {
+              const fileReader = new FileReader();
+              fileReader.readAsText(e.target.files[0], "UTF-8");
+              fileReader.onload = (e) => {
+                setStore((prevStore) => ({
+                  ...prevStore,
+                  [selectedChoice]: JSON.parse(e.target.result),
+                }));
+              };
+            }}
+          />
           <LookupTable
             {...{
               selectedTable: store[selectedChoice],

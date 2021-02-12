@@ -1,4 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog, Menu } = require("electron");
+const isDev = require("electron-is-dev");
+const url = require("url");
 const path = require("path");
 const Excel = require("exceljs");
 const {
@@ -12,7 +14,7 @@ const { prepareSheet } = require("./scraper/wbCreators");
 const { getLookUpTables, saveLookUpTables } = require("./scraper/appStorage");
 
 let mainWindow;
-Menu.setApplicationMenu(false)
+Menu.setApplicationMenu(false);
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -24,7 +26,15 @@ function createWindow() {
       enableRemoteModule: true,
     },
   });
-  mainWindow.loadURL("http://localhost:3000");
+  mainWindow.loadURL(
+    isDev
+      ? "http://localhost:3000"
+      : url.format({
+          pathname: path.join(__dirname, "/build/index.html"),
+          protocol: "file:",
+          slashes: true,
+        })
+  );
 }
 
 ipcMain.on("select-dirs", async (event, arg) => {
@@ -53,8 +63,6 @@ ipcMain.on("parameters:selected", async (e, params) => {
       modeSelection,
     } = params;
     const token = await setUpResidentialToken();
-
-    console.log(resultWbPath);
 
     let targetWb = new Excel.Workbook();
     targetWb = await targetWb.xlsx.readFile(filename);
@@ -107,7 +115,11 @@ ipcMain.on("parameters:selected", async (e, params) => {
 
     mainWindow.webContents.send("data:constructed");
   } catch (err) {
-    console.log(err);
+    mainWindow.webContents.send(
+      "error:push",
+      `Error: ${err}! Please check your excel is valid and try again!`
+    );
+    mainWindow.webContents.send("data:constructed");
   }
 });
 

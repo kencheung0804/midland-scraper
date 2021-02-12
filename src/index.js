@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import App from "./App";
 import UploadJson from "./UploadJson";
 
@@ -11,8 +11,6 @@ const Index = () => {
         <Route path="/" exact>
           <App />
         </Route>
-      </Switch>
-      <Switch>
         <Route path="/upload_json" exact>
           <UploadJson />
         </Route>
